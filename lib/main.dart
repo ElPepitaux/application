@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_rust_bridge_template/bridge_generated.dart';
+import 'package:flutter_rust_bridge_template/page_add.dart';
 
 const base = "rust";
 final path =
@@ -55,7 +56,12 @@ class _RoutePageState extends State<RoutePage> {
         height: 50,
         margin: const EdgeInsets.all(10),
         child: ElevatedButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const AddPage()));
+          },
           child: const Center(
             child: Text('add todo'),
           ),
