@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_rust_bridge_template/bridge_generated.dart';
 import 'package:flutter_rust_bridge_template/page_add.dart';
+import 'package:flutter_rust_bridge_template/page_home.dart';
 
 const base = "rust";
 final path =
@@ -50,8 +51,7 @@ class _RoutePageState extends State<RoutePage> {
       appBar: AppBar(
         title: const Text("Apptodo"),
       ),
-      backgroundColor: Colors.black,
-      body: const Column(children: []),
+      body: BodyPage(),
       floatingActionButton: Container(
         height: 50,
         margin: const EdgeInsets.all(10),

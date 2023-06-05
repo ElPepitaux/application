@@ -11,17 +11,19 @@ import 'package:uuid/uuid.dart';
 import 'dart:ffi' as ffi;
 
 abstract class Rust {
-  Future<int> getCounter({dynamic hint});
+  Future<void> add(
+      {required String title,
+      required String description,
+      required String priority,
+      required String time,
+      required String status,
+      dynamic hint});
 
-  FlutterRustBridgeTaskConstMeta get kGetCounterConstMeta;
+  FlutterRustBridgeTaskConstMeta get kAddConstMeta;
 
-  Future<int> increment({dynamic hint});
+  Future<void> display({dynamic hint});
 
-  FlutterRustBridgeTaskConstMeta get kIncrementConstMeta;
-
-  Future<int> decrement({dynamic hint});
-
-  FlutterRustBridgeTaskConstMeta get kDecrementConstMeta;
+  FlutterRustBridgeTaskConstMeta get kDisplayConstMeta;
 }
 
 class RustImpl implements Rust {
@@ -32,51 +34,47 @@ class RustImpl implements Rust {
   factory RustImpl.wasm(FutureOr<WasmModule> module) =>
       RustImpl(module as ExternalLibrary);
   RustImpl.raw(this._platform);
-  Future<int> getCounter({dynamic hint}) {
+  Future<void> add(
+      {required String title,
+      required String description,
+      required String priority,
+      required String time,
+      required String status,
+      dynamic hint}) {
+    var arg0 = _platform.api2wire_String(title);
+    var arg1 = _platform.api2wire_String(description);
+    var arg2 = _platform.api2wire_String(priority);
+    var arg3 = _platform.api2wire_String(time);
+    var arg4 = _platform.api2wire_String(status);
     return _platform.executeNormal(FlutterRustBridgeTask(
-      callFfi: (port_) => _platform.inner.wire_get_counter(port_),
-      parseSuccessData: _wire2api_u64,
-      constMeta: kGetCounterConstMeta,
-      argValues: [],
+      callFfi: (port_) =>
+          _platform.inner.wire_add(port_, arg0, arg1, arg2, arg3, arg4),
+      parseSuccessData: _wire2api_unit,
+      constMeta: kAddConstMeta,
+      argValues: [title, description, priority, time, status],
       hint: hint,
     ));
   }
 
-  FlutterRustBridgeTaskConstMeta get kGetCounterConstMeta =>
+  FlutterRustBridgeTaskConstMeta get kAddConstMeta =>
       const FlutterRustBridgeTaskConstMeta(
-        debugName: "get_counter",
-        argNames: [],
+        debugName: "add",
+        argNames: ["title", "description", "priority", "time", "status"],
       );
 
-  Future<int> increment({dynamic hint}) {
+  Future<void> display({dynamic hint}) {
     return _platform.executeNormal(FlutterRustBridgeTask(
-      callFfi: (port_) => _platform.inner.wire_increment(port_),
-      parseSuccessData: _wire2api_u64,
-      constMeta: kIncrementConstMeta,
+      callFfi: (port_) => _platform.inner.wire_display(port_),
+      parseSuccessData: _wire2api_unit,
+      constMeta: kDisplayConstMeta,
       argValues: [],
       hint: hint,
     ));
   }
 
-  FlutterRustBridgeTaskConstMeta get kIncrementConstMeta =>
+  FlutterRustBridgeTaskConstMeta get kDisplayConstMeta =>
       const FlutterRustBridgeTaskConstMeta(
-        debugName: "increment",
-        argNames: [],
-      );
-
-  Future<int> decrement({dynamic hint}) {
-    return _platform.executeNormal(FlutterRustBridgeTask(
-      callFfi: (port_) => _platform.inner.wire_decrement(port_),
-      parseSuccessData: _wire2api_u64,
-      constMeta: kDecrementConstMeta,
-      argValues: [],
-      hint: hint,
-    ));
-  }
-
-  FlutterRustBridgeTaskConstMeta get kDecrementConstMeta =>
-      const FlutterRustBridgeTaskConstMeta(
-        debugName: "decrement",
+        debugName: "display",
         argNames: [],
       );
 
@@ -85,12 +83,17 @@ class RustImpl implements Rust {
   }
 // Section: wire2api
 
-  int _wire2api_u64(dynamic raw) {
-    return castInt(raw);
+  void _wire2api_unit(dynamic raw) {
+    return;
   }
 }
 
 // Section: api2wire
+
+@protected
+int api2wire_u8(int raw) {
+  return raw;
+}
 
 // Section: finalizer
 
@@ -99,6 +102,17 @@ class RustPlatform extends FlutterRustBridgeBase<RustWire> {
 
 // Section: api2wire
 
+  @protected
+  ffi.Pointer<wire_uint_8_list> api2wire_String(String raw) {
+    return api2wire_uint_8_list(utf8.encoder.convert(raw));
+  }
+
+  @protected
+  ffi.Pointer<wire_uint_8_list> api2wire_uint_8_list(Uint8List raw) {
+    final ans = inner.new_uint_8_list_0(raw.length);
+    ans.ref.ptr.asTypedList(raw.length).setAll(0, raw);
+    return ans;
+  }
 // Section: finalizer
 
 // Section: api_fill_to_wire
@@ -199,47 +213,68 @@ class RustWire implements FlutterRustBridgeWireBase {
   late final _init_frb_dart_api_dl = _init_frb_dart_api_dlPtr
       .asFunction<int Function(ffi.Pointer<ffi.Void>)>();
 
-  void wire_get_counter(
+  void wire_add(
+    int port_,
+    ffi.Pointer<wire_uint_8_list> title,
+    ffi.Pointer<wire_uint_8_list> description,
+    ffi.Pointer<wire_uint_8_list> priority,
+    ffi.Pointer<wire_uint_8_list> time,
+    ffi.Pointer<wire_uint_8_list> status,
+  ) {
+    return _wire_add(
+      port_,
+      title,
+      description,
+      priority,
+      time,
+      status,
+    );
+  }
+
+  late final _wire_addPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Void Function(
+              ffi.Int64,
+              ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_uint_8_list>)>>('wire_add');
+  late final _wire_add = _wire_addPtr.asFunction<
+      void Function(
+          int,
+          ffi.Pointer<wire_uint_8_list>,
+          ffi.Pointer<wire_uint_8_list>,
+          ffi.Pointer<wire_uint_8_list>,
+          ffi.Pointer<wire_uint_8_list>,
+          ffi.Pointer<wire_uint_8_list>)>();
+
+  void wire_display(
     int port_,
   ) {
-    return _wire_get_counter(
+    return _wire_display(
       port_,
     );
   }
 
-  late final _wire_get_counterPtr =
-      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64)>>(
-          'wire_get_counter');
-  late final _wire_get_counter =
-      _wire_get_counterPtr.asFunction<void Function(int)>();
+  late final _wire_displayPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64)>>('wire_display');
+  late final _wire_display = _wire_displayPtr.asFunction<void Function(int)>();
 
-  void wire_increment(
-    int port_,
+  ffi.Pointer<wire_uint_8_list> new_uint_8_list_0(
+    int len,
   ) {
-    return _wire_increment(
-      port_,
+    return _new_uint_8_list_0(
+      len,
     );
   }
 
-  late final _wire_incrementPtr =
-      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64)>>(
-          'wire_increment');
-  late final _wire_increment =
-      _wire_incrementPtr.asFunction<void Function(int)>();
-
-  void wire_decrement(
-    int port_,
-  ) {
-    return _wire_decrement(
-      port_,
-    );
-  }
-
-  late final _wire_decrementPtr =
-      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64)>>(
-          'wire_decrement');
-  late final _wire_decrement =
-      _wire_decrementPtr.asFunction<void Function(int)>();
+  late final _new_uint_8_list_0Ptr = _lookup<
+      ffi.NativeFunction<
+          ffi.Pointer<wire_uint_8_list> Function(
+              ffi.Int32)>>('new_uint_8_list_0');
+  late final _new_uint_8_list_0 = _new_uint_8_list_0Ptr
+      .asFunction<ffi.Pointer<wire_uint_8_list> Function(int)>();
 
   void free_WireSyncReturn(
     WireSyncReturn ptr,
@@ -257,6 +292,13 @@ class RustWire implements FlutterRustBridgeWireBase {
 }
 
 final class _Dart_Handle extends ffi.Opaque {}
+
+final class wire_uint_8_list extends ffi.Struct {
+  external ffi.Pointer<ffi.Uint8> ptr;
+
+  @ffi.Int32()
+  external int len;
+}
 
 typedef DartPostCObjectFnType = ffi.Pointer<
     ffi.NativeFunction<

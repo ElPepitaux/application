@@ -21,34 +21,46 @@ use std::sync::Arc;
 
 // Section: wire functions
 
-fn wire_get_counter_impl(port_: MessagePort) {
+fn wire_add_impl(
+    port_: MessagePort,
+    title: impl Wire2Api<String> + UnwindSafe,
+    description: impl Wire2Api<String> + UnwindSafe,
+    priority: impl Wire2Api<String> + UnwindSafe,
+    time: impl Wire2Api<String> + UnwindSafe,
+    status: impl Wire2Api<String> + UnwindSafe,
+) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap(
         WrapInfo {
-            debug_name: "get_counter",
+            debug_name: "add",
             port: Some(port_),
             mode: FfiCallMode::Normal,
         },
-        move || move |task_callback| Ok(get_counter()),
+        move || {
+            let api_title = title.wire2api();
+            let api_description = description.wire2api();
+            let api_priority = priority.wire2api();
+            let api_time = time.wire2api();
+            let api_status = status.wire2api();
+            move |task_callback| {
+                Ok(add(
+                    api_title,
+                    api_description,
+                    api_priority,
+                    api_time,
+                    api_status,
+                ))
+            }
+        },
     )
 }
-fn wire_increment_impl(port_: MessagePort) {
+fn wire_display_impl(port_: MessagePort) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap(
         WrapInfo {
-            debug_name: "increment",
+            debug_name: "display",
             port: Some(port_),
             mode: FfiCallMode::Normal,
         },
-        move || move |task_callback| Ok(increment()),
-    )
-}
-fn wire_decrement_impl(port_: MessagePort) {
-    FLUTTER_RUST_BRIDGE_HANDLER.wrap(
-        WrapInfo {
-            debug_name: "decrement",
-            port: Some(port_),
-            mode: FfiCallMode::Normal,
-        },
-        move || move |task_callback| Ok(decrement()),
+        move || move |task_callback| Ok(display()),
     )
 }
 // Section: wrapper structs
@@ -73,6 +85,13 @@ where
         (!self.is_null()).then(|| self.wire2api())
     }
 }
+
+impl Wire2Api<u8> for u8 {
+    fn wire2api(self) -> u8 {
+        self
+    }
+}
+
 // Section: impl IntoDart
 
 // Section: executor

@@ -1,17 +1,35 @@
-use std::sync::atomic::{AtomicU64, Ordering};
-
-static COUNTER: AtomicU64 = AtomicU64::new(0);
-
-pub fn get_counter() -> u64 {
-    COUNTER.load(Ordering::SeqCst)
+pub struct Todo {
+    title: String,
+    description: String,
+    priority: String,
+    time: String,
+    status: String,
 }
 
-pub fn increment() -> u64 {
-    COUNTER.fetch_add(1, Ordering::SeqCst);
-    COUNTER.load(Ordering::SeqCst)
+pub static mut TODOS: Vec<Todo> = Vec::new();
+
+pub fn add(title: String, description: String, priority: String, time: String, status: String) {
+    let todo = Todo {
+        title,
+        description,
+        priority,
+        time,
+        status,
+    };
+
+    unsafe {
+        TODOS.push(todo);
+    }
 }
 
-pub fn decrement() -> u64 {
-    COUNTER.fetch_sub(1, Ordering::SeqCst);
-    COUNTER.load(Ordering::SeqCst)
+pub fn display() {
+    unsafe {
+        for todo in TODOS.iter() {
+            println!("Title: {}", todo.title);
+            println!("Description: {}", todo.description);
+            println!("Priority: {}", todo.priority);
+            println!("Time: {}", todo.time);
+            println!("Status: {}", todo.status);
+        }
+    }
 }
