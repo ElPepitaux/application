@@ -63,6 +63,16 @@ fn wire_display_impl(port_: MessagePort) {
         move || move |task_callback| Ok(display()),
     )
 }
+fn wire_get_todos_impl(port_: MessagePort) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap(
+        WrapInfo {
+            debug_name: "get_todos",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || move |task_callback| Ok(get_todos()),
+    )
+}
 // Section: wrapper structs
 
 // Section: static checks
@@ -93,6 +103,20 @@ impl Wire2Api<u8> for u8 {
 }
 
 // Section: impl IntoDart
+
+impl support::IntoDart for Todo {
+    fn into_dart(self) -> support::DartAbi {
+        vec![
+            self.title.into_dart(),
+            self.description.into_dart(),
+            self.priority.into_dart(),
+            self.time.into_dart(),
+            self.status.into_dart(),
+        ]
+        .into_dart()
+    }
+}
+impl support::IntoDartExceptPrimitive for Todo {}
 
 // Section: executor
 

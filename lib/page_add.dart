@@ -1,20 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'dart:ffi';
-import 'dart:io';
+import 'package:flutter_rust_bridge_template/api.dart';
 import 'package:flutter_rust_bridge_template/bridge_generated.dart';
-
-
-const base = "rust";
-final path =
-    Platform.isWindows ? "$base.dll" : "rust/target/release/lib$base.so";
-final dylib = Platform.isIOS
-    ? DynamicLibrary.process()
-    : Platform.isMacOS
-        ? DynamicLibrary.executable()
-        : DynamicLibrary.open(path);
-
-final api = RustImpl(dylib);
 
 class Option {
   final String title;
@@ -51,13 +38,14 @@ class InputText extends StatelessWidget {
 }
 
 class AddPage extends StatefulWidget {
-  const AddPage({Key? key}) : super(key: key);
-
+  const AddPage({Key? key, required this.api}) : super(key: key);
+  final Api api;
   @override
   State<AddPage> createState() => _AddPageState();
 }
 
 class _AddPageState extends State<AddPage> {
+  late RustImpl _api;
   final TextEditingController _titreEditingController = TextEditingController();
   final TextEditingController _descriptionEditingController = TextEditingController();
   final TextEditingController _dateEditingTime = TextEditingController();
@@ -70,6 +58,12 @@ class _AddPageState extends State<AddPage> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    _api = widget.api.getapi();
+  }
+
+  @override
   void dispose() {
     _titreEditingController.dispose();
     _descriptionEditingController.dispose();
@@ -77,14 +71,13 @@ class _AddPageState extends State<AddPage> {
   }
   String time = "time";
   void saveTodo() {
-    api.add(
+    _api.add(
     title: _titreEditingController.text,
     description: _descriptionEditingController.text,
     priority: priority.toString(),
     time: _dateEditingTime.text,
     status: selectedOption!.value
     );
-    api.display();
     Navigator.pop(context);
   }
   var item = [

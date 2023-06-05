@@ -18,6 +18,11 @@ pub extern "C" fn wire_display(port_: i64) {
     wire_display_impl(port_)
 }
 
+#[no_mangle]
+pub extern "C" fn wire_get_todos(port_: i64) {
+    wire_get_todos_impl(port_)
+}
+
 // Section: allocate functions
 
 #[no_mangle]

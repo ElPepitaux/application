@@ -1,9 +1,10 @@
+#[derive(Clone)]
 pub struct Todo {
-    title: String,
-    description: String,
-    priority: String,
-    time: String,
-    status: String,
+    pub title: String,
+    pub description: String,
+    pub priority: String,
+    pub time: String,
+    pub status: String,
 }
 
 pub static mut TODOS: Vec<Todo> = Vec::new();
@@ -33,3 +34,10 @@ pub fn display() {
         }
     }
 }
+
+pub fn get_todos() -> Vec<Todo> {
+    unsafe {
+        TODOS.clone()
+    }
+}
+

@@ -1,28 +1,16 @@
-import 'dart:ffi';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_rust_bridge_template/bridge_generated.dart';
 import 'package:flutter_rust_bridge_template/page_add.dart';
 import 'package:flutter_rust_bridge_template/page_home.dart';
-
-const base = "rust";
-final path =
-    Platform.isWindows ? "$base.dll" : "rust/target/release/lib$base.so";
-final dylib = Platform.isIOS
-    ? DynamicLibrary.process()
-    : Platform.isMacOS
-        ? DynamicLibrary.executable()
-        : DynamicLibrary.open(path);
-
-final api = RustImpl(dylib);
+import 'package:flutter_rust_bridge_template/api.dart';
 
 void main() {
-  runApp(const MyApp());
+  final api = Api();
+  runApp(MyApp(api: api));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  final Api api;
+  const MyApp({Key? key, required this.api}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -31,19 +19,28 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.grey,
       ),
-      home: const RoutePage(),
+      home: RoutePage(api: api),
     );
   }
 }
 
 class RoutePage extends StatefulWidget {
-  const RoutePage({Key? key}) : super(key: key);
+  final Api api;
+  const RoutePage({Key? key, required this.api}) : super(key: key);
 
   @override
   State<RoutePage> createState() => _RoutePageState();
 }
 
 class _RoutePageState extends State<RoutePage> {
+  late Api api;
+
+  @override
+  void initState() {
+    super.initState();
+    api = widget.api;
+  }
+
   int currentIndex = 0;
   @override
   Widget build(BuildContext context) {
@@ -51,7 +48,7 @@ class _RoutePageState extends State<RoutePage> {
       appBar: AppBar(
         title: const Text("Apptodo"),
       ),
-      body: BodyPage(),
+      body: BodyPage(api: api),
       floatingActionButton: Container(
         height: 50,
         margin: const EdgeInsets.all(10),
@@ -60,7 +57,7 @@ class _RoutePageState extends State<RoutePage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => const AddPage()));
+                  builder: (context) => AddPage(api: api)));
           },
           child: const Center(
             child: Text('add todo'),

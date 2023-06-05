@@ -24,6 +24,26 @@ abstract class Rust {
   Future<void> display({dynamic hint});
 
   FlutterRustBridgeTaskConstMeta get kDisplayConstMeta;
+
+  Future<List<Todo>> getTodos({dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kGetTodosConstMeta;
+}
+
+class Todo {
+  final String title;
+  final String description;
+  final String priority;
+  final String time;
+  final String status;
+
+  const Todo({
+    required this.title,
+    required this.description,
+    required this.priority,
+    required this.time,
+    required this.status,
+  });
 }
 
 class RustImpl implements Rust {
@@ -78,10 +98,55 @@ class RustImpl implements Rust {
         argNames: [],
       );
 
+  Future<List<Todo>> getTodos({dynamic hint}) {
+    return _platform.executeNormal(FlutterRustBridgeTask(
+      callFfi: (port_) => _platform.inner.wire_get_todos(port_),
+      parseSuccessData: _wire2api_list_todo,
+      constMeta: kGetTodosConstMeta,
+      argValues: [],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kGetTodosConstMeta =>
+      const FlutterRustBridgeTaskConstMeta(
+        debugName: "get_todos",
+        argNames: [],
+      );
+
   void dispose() {
     _platform.dispose();
   }
 // Section: wire2api
+
+  String _wire2api_String(dynamic raw) {
+    return raw as String;
+  }
+
+  List<Todo> _wire2api_list_todo(dynamic raw) {
+    return (raw as List<dynamic>).map(_wire2api_todo).toList();
+  }
+
+  Todo _wire2api_todo(dynamic raw) {
+    final arr = raw as List<dynamic>;
+    if (arr.length != 5)
+      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    return Todo(
+      title: _wire2api_String(arr[0]),
+      description: _wire2api_String(arr[1]),
+      priority: _wire2api_String(arr[2]),
+      time: _wire2api_String(arr[3]),
+      status: _wire2api_String(arr[4]),
+    );
+  }
+
+  int _wire2api_u8(dynamic raw) {
+    return raw as int;
+  }
+
+  Uint8List _wire2api_uint_8_list(dynamic raw) {
+    return raw as Uint8List;
+  }
 
   void _wire2api_unit(dynamic raw) {
     return;
@@ -260,6 +325,20 @@ class RustWire implements FlutterRustBridgeWireBase {
   late final _wire_displayPtr =
       _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64)>>('wire_display');
   late final _wire_display = _wire_displayPtr.asFunction<void Function(int)>();
+
+  void wire_get_todos(
+    int port_,
+  ) {
+    return _wire_get_todos(
+      port_,
+    );
+  }
+
+  late final _wire_get_todosPtr =
+      _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64)>>(
+          'wire_get_todos');
+  late final _wire_get_todos =
+      _wire_get_todosPtr.asFunction<void Function(int)>();
 
   ffi.Pointer<wire_uint_8_list> new_uint_8_list_0(
     int len,
