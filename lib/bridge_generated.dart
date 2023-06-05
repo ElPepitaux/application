@@ -25,6 +25,10 @@ abstract class Rust {
 
   FlutterRustBridgeTaskConstMeta get kDisplayConstMeta;
 
+  Future<void> removeTodo({required String title, dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kRemoveTodoConstMeta;
+
   Future<List<Todo>> getTodos({dynamic hint});
 
   FlutterRustBridgeTaskConstMeta get kGetTodosConstMeta;
@@ -96,6 +100,23 @@ class RustImpl implements Rust {
       const FlutterRustBridgeTaskConstMeta(
         debugName: "display",
         argNames: [],
+      );
+
+  Future<void> removeTodo({required String title, dynamic hint}) {
+    var arg0 = _platform.api2wire_String(title);
+    return _platform.executeNormal(FlutterRustBridgeTask(
+      callFfi: (port_) => _platform.inner.wire_remove_todo(port_, arg0),
+      parseSuccessData: _wire2api_unit,
+      constMeta: kRemoveTodoConstMeta,
+      argValues: [title],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kRemoveTodoConstMeta =>
+      const FlutterRustBridgeTaskConstMeta(
+        debugName: "remove_todo",
+        argNames: ["title"],
       );
 
   Future<List<Todo>> getTodos({dynamic hint}) {
@@ -325,6 +346,23 @@ class RustWire implements FlutterRustBridgeWireBase {
   late final _wire_displayPtr =
       _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64)>>('wire_display');
   late final _wire_display = _wire_displayPtr.asFunction<void Function(int)>();
+
+  void wire_remove_todo(
+    int port_,
+    ffi.Pointer<wire_uint_8_list> title,
+  ) {
+    return _wire_remove_todo(
+      port_,
+      title,
+    );
+  }
+
+  late final _wire_remove_todoPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Void Function(
+              ffi.Int64, ffi.Pointer<wire_uint_8_list>)>>('wire_remove_todo');
+  late final _wire_remove_todo = _wire_remove_todoPtr
+      .asFunction<void Function(int, ffi.Pointer<wire_uint_8_list>)>();
 
   void wire_get_todos(
     int port_,

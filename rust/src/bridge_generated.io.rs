@@ -19,6 +19,11 @@ pub extern "C" fn wire_display(port_: i64) {
 }
 
 #[no_mangle]
+pub extern "C" fn wire_remove_todo(port_: i64, title: *mut wire_uint_8_list) {
+    wire_remove_todo_impl(port_, title)
+}
+
+#[no_mangle]
 pub extern "C" fn wire_get_todos(port_: i64) {
     wire_get_todos_impl(port_)
 }

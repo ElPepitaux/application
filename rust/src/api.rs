@@ -35,6 +35,12 @@ pub fn display() {
     }
 }
 
+pub fn remove_todo(title: String) {
+    unsafe {
+        TODOS.retain(|todo| todo.title != title);
+    }
+}
+
 pub fn get_todos() -> Vec<Todo> {
     unsafe {
         TODOS.clone()
