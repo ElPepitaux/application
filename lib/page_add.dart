@@ -1,8 +1,10 @@
+// I need to document my code better, but I'm not sure how to do it.
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_rust_bridge_template/api.dart';
 import 'package:flutter_rust_bridge_template/bridge_generated.dart';
 
+// This is the API class that will be used by the Flutter app.
 class Option {
   final String title;
   final String value;
@@ -100,6 +102,7 @@ class AddPage extends StatefulWidget {
   State<AddPage> createState() => _AddPageState();
 }
 
+// This is the state of the main page of the app.
 class _AddPageState extends State<AddPage> {
   bool showError = false;
   late RustImpl _api;
@@ -136,9 +139,9 @@ class _AddPageState extends State<AddPage> {
   }
 
   String time = "time";
+  // This function is called when the user presses the "Save" button.
   bool saveTodo() {
     String day = '${selectedDate!.day} day / ${selectedDate!.month} month';
-    print(day);
     if (_titreEditingController.text.isEmpty ||
         _descriptionEditingController.text.isEmpty ||
         _dateEditingTime.text.isEmpty ||

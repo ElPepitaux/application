@@ -3,11 +3,14 @@ import 'package:flutter_rust_bridge_template/page_add.dart';
 import 'package:flutter_rust_bridge_template/page_home.dart';
 import 'package:flutter_rust_bridge_template/api.dart';
 
+// This is the main function of the app.
 void main() {
+  // This is the api that will be used by the app.
   final api = Api();
   runApp(MyApp(api: api));
 }
 
+// This is the main widget of the app.
 class MyApp extends StatelessWidget {
   final Api api;
   const MyApp({Key? key, required this.api}) : super(key: key);
@@ -24,6 +27,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+// This is the main page of the app.
 class RoutePage extends StatefulWidget {
   final Api api;
   const RoutePage({Key? key, required this.api}) : super(key: key);
@@ -32,6 +36,7 @@ class RoutePage extends StatefulWidget {
   State<RoutePage> createState() => _RoutePageState();
 }
 
+// This is the state of the main page of the app.
 class _RoutePageState extends State<RoutePage> {
   late Api api;
 

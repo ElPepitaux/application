@@ -26,6 +26,11 @@ abstract class Rust {
 
   FlutterRustBridgeTaskConstMeta get kDisplayConstMeta;
 
+  Future<void> updateStatus(
+      {required String title, required String status, dynamic hint});
+
+  FlutterRustBridgeTaskConstMeta get kUpdateStatusConstMeta;
+
   Future<void> removeTodo({required String title, dynamic hint});
 
   FlutterRustBridgeTaskConstMeta get kRemoveTodoConstMeta;
@@ -105,6 +110,25 @@ class RustImpl implements Rust {
       const FlutterRustBridgeTaskConstMeta(
         debugName: "display",
         argNames: [],
+      );
+
+  Future<void> updateStatus(
+      {required String title, required String status, dynamic hint}) {
+    var arg0 = _platform.api2wire_String(title);
+    var arg1 = _platform.api2wire_String(status);
+    return _platform.executeNormal(FlutterRustBridgeTask(
+      callFfi: (port_) => _platform.inner.wire_update_status(port_, arg0, arg1),
+      parseSuccessData: _wire2api_unit,
+      constMeta: kUpdateStatusConstMeta,
+      argValues: [title, status],
+      hint: hint,
+    ));
+  }
+
+  FlutterRustBridgeTaskConstMeta get kUpdateStatusConstMeta =>
+      const FlutterRustBridgeTaskConstMeta(
+        debugName: "update_status",
+        argNames: ["title", "status"],
       );
 
   Future<void> removeTodo({required String title, dynamic hint}) {
@@ -356,6 +380,26 @@ class RustWire implements FlutterRustBridgeWireBase {
   late final _wire_displayPtr =
       _lookup<ffi.NativeFunction<ffi.Void Function(ffi.Int64)>>('wire_display');
   late final _wire_display = _wire_displayPtr.asFunction<void Function(int)>();
+
+  void wire_update_status(
+    int port_,
+    ffi.Pointer<wire_uint_8_list> title,
+    ffi.Pointer<wire_uint_8_list> status,
+  ) {
+    return _wire_update_status(
+      port_,
+      title,
+      status,
+    );
+  }
+
+  late final _wire_update_statusPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Void Function(ffi.Int64, ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_uint_8_list>)>>('wire_update_status');
+  late final _wire_update_status = _wire_update_statusPtr.asFunction<
+      void Function(
+          int, ffi.Pointer<wire_uint_8_list>, ffi.Pointer<wire_uint_8_list>)>();
 
   void wire_remove_todo(
     int port_,

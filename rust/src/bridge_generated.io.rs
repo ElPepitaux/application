@@ -20,6 +20,15 @@ pub extern "C" fn wire_display(port_: i64) {
 }
 
 #[no_mangle]
+pub extern "C" fn wire_update_status(
+    port_: i64,
+    title: *mut wire_uint_8_list,
+    status: *mut wire_uint_8_list,
+) {
+    wire_update_status_impl(port_, title, status)
+}
+
+#[no_mangle]
 pub extern "C" fn wire_remove_todo(port_: i64, title: *mut wire_uint_8_list) {
     wire_remove_todo_impl(port_, title)
 }

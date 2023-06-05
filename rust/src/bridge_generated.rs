@@ -66,6 +66,24 @@ fn wire_display_impl(port_: MessagePort) {
         move || move |task_callback| Ok(display()),
     )
 }
+fn wire_update_status_impl(
+    port_: MessagePort,
+    title: impl Wire2Api<String> + UnwindSafe,
+    status: impl Wire2Api<String> + UnwindSafe,
+) {
+    FLUTTER_RUST_BRIDGE_HANDLER.wrap(
+        WrapInfo {
+            debug_name: "update_status",
+            port: Some(port_),
+            mode: FfiCallMode::Normal,
+        },
+        move || {
+            let api_title = title.wire2api();
+            let api_status = status.wire2api();
+            move |task_callback| Ok(update_status(api_title, api_status))
+        },
+    )
+}
 fn wire_remove_todo_impl(port_: MessagePort, title: impl Wire2Api<String> + UnwindSafe) {
     FLUTTER_RUST_BRIDGE_HANDLER.wrap(
         WrapInfo {
