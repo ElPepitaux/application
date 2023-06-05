@@ -1,0 +1,1 @@
+/home/sleo/repo/Flutter/application/rust/target/release/librust.a: /home/sleo/repo/Flutter/application/rust/src/api.rs /home/sleo/repo/Flutter/application/rust/src/bridge_generated.io.rs /home/sleo/repo/Flutter/application/rust/src/bridge_generated.rs /home/sleo/repo/Flutter/application/rust/src/lib.rs
