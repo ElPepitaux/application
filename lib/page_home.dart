@@ -65,6 +65,14 @@ class ColumnTodo extends StatelessWidget {
                           ),
                           const SizedBox(height: 8),
                           Text(
+                            todo.day,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 10,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
                             todo.description,
                             style: const TextStyle(
                               color: Colors.white,

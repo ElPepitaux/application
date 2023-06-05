@@ -26,6 +26,7 @@ fn wire_add_impl(
     title: impl Wire2Api<String> + UnwindSafe,
     description: impl Wire2Api<String> + UnwindSafe,
     priority: impl Wire2Api<String> + UnwindSafe,
+    day: impl Wire2Api<String> + UnwindSafe,
     time: impl Wire2Api<String> + UnwindSafe,
     status: impl Wire2Api<String> + UnwindSafe,
 ) {
@@ -39,6 +40,7 @@ fn wire_add_impl(
             let api_title = title.wire2api();
             let api_description = description.wire2api();
             let api_priority = priority.wire2api();
+            let api_day = day.wire2api();
             let api_time = time.wire2api();
             let api_status = status.wire2api();
             move |task_callback| {
@@ -46,6 +48,7 @@ fn wire_add_impl(
                     api_title,
                     api_description,
                     api_priority,
+                    api_day,
                     api_time,
                     api_status,
                 ))
@@ -123,6 +126,7 @@ impl support::IntoDart for Todo {
             self.title.into_dart(),
             self.description.into_dart(),
             self.priority.into_dart(),
+            self.day.into_dart(),
             self.time.into_dart(),
             self.status.into_dart(),
         ]

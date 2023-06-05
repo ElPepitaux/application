@@ -15,6 +15,7 @@ abstract class Rust {
       {required String title,
       required String description,
       required String priority,
+      required String day,
       required String time,
       required String status,
       dynamic hint});
@@ -38,6 +39,7 @@ class Todo {
   final String title;
   final String description;
   final String priority;
+  final String day;
   final String time;
   final String status;
 
@@ -45,6 +47,7 @@ class Todo {
     required this.title,
     required this.description,
     required this.priority,
+    required this.day,
     required this.time,
     required this.status,
   });
@@ -62,20 +65,22 @@ class RustImpl implements Rust {
       {required String title,
       required String description,
       required String priority,
+      required String day,
       required String time,
       required String status,
       dynamic hint}) {
     var arg0 = _platform.api2wire_String(title);
     var arg1 = _platform.api2wire_String(description);
     var arg2 = _platform.api2wire_String(priority);
-    var arg3 = _platform.api2wire_String(time);
-    var arg4 = _platform.api2wire_String(status);
+    var arg3 = _platform.api2wire_String(day);
+    var arg4 = _platform.api2wire_String(time);
+    var arg5 = _platform.api2wire_String(status);
     return _platform.executeNormal(FlutterRustBridgeTask(
       callFfi: (port_) =>
-          _platform.inner.wire_add(port_, arg0, arg1, arg2, arg3, arg4),
+          _platform.inner.wire_add(port_, arg0, arg1, arg2, arg3, arg4, arg5),
       parseSuccessData: _wire2api_unit,
       constMeta: kAddConstMeta,
-      argValues: [title, description, priority, time, status],
+      argValues: [title, description, priority, day, time, status],
       hint: hint,
     ));
   }
@@ -83,7 +88,7 @@ class RustImpl implements Rust {
   FlutterRustBridgeTaskConstMeta get kAddConstMeta =>
       const FlutterRustBridgeTaskConstMeta(
         debugName: "add",
-        argNames: ["title", "description", "priority", "time", "status"],
+        argNames: ["title", "description", "priority", "day", "time", "status"],
       );
 
   Future<void> display({dynamic hint}) {
@@ -150,14 +155,15 @@ class RustImpl implements Rust {
 
   Todo _wire2api_todo(dynamic raw) {
     final arr = raw as List<dynamic>;
-    if (arr.length != 5)
-      throw Exception('unexpected arr length: expect 5 but see ${arr.length}');
+    if (arr.length != 6)
+      throw Exception('unexpected arr length: expect 6 but see ${arr.length}');
     return Todo(
       title: _wire2api_String(arr[0]),
       description: _wire2api_String(arr[1]),
       priority: _wire2api_String(arr[2]),
-      time: _wire2api_String(arr[3]),
-      status: _wire2api_String(arr[4]),
+      day: _wire2api_String(arr[3]),
+      time: _wire2api_String(arr[4]),
+      status: _wire2api_String(arr[5]),
     );
   }
 
@@ -304,6 +310,7 @@ class RustWire implements FlutterRustBridgeWireBase {
     ffi.Pointer<wire_uint_8_list> title,
     ffi.Pointer<wire_uint_8_list> description,
     ffi.Pointer<wire_uint_8_list> priority,
+    ffi.Pointer<wire_uint_8_list> day,
     ffi.Pointer<wire_uint_8_list> time,
     ffi.Pointer<wire_uint_8_list> status,
   ) {
@@ -312,6 +319,7 @@ class RustWire implements FlutterRustBridgeWireBase {
       title,
       description,
       priority,
+      day,
       time,
       status,
     );
@@ -325,10 +333,12 @@ class RustWire implements FlutterRustBridgeWireBase {
               ffi.Pointer<wire_uint_8_list>,
               ffi.Pointer<wire_uint_8_list>,
               ffi.Pointer<wire_uint_8_list>,
+              ffi.Pointer<wire_uint_8_list>,
               ffi.Pointer<wire_uint_8_list>)>>('wire_add');
   late final _wire_add = _wire_addPtr.asFunction<
       void Function(
           int,
+          ffi.Pointer<wire_uint_8_list>,
           ffi.Pointer<wire_uint_8_list>,
           ffi.Pointer<wire_uint_8_list>,
           ffi.Pointer<wire_uint_8_list>,

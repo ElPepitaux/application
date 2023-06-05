@@ -3,17 +3,19 @@ pub struct Todo {
     pub title: String,
     pub description: String,
     pub priority: String,
+    pub day: String,
     pub time: String,
     pub status: String,
 }
 
 pub static mut TODOS: Vec<Todo> = Vec::new();
 
-pub fn add(title: String, description: String, priority: String, time: String, status: String) {
+pub fn add(title: String, description: String, priority: String, day: String, time: String, status: String) {
     let todo = Todo {
         title,
         description,
         priority,
+        day,
         time,
         status,
     };
@@ -29,6 +31,7 @@ pub fn display() {
             println!("Title: {}", todo.title);
             println!("Description: {}", todo.description);
             println!("Priority: {}", todo.priority);
+            println!("Day: {}", todo.day);
             println!("Time: {}", todo.time);
             println!("Status: {}", todo.status);
         }

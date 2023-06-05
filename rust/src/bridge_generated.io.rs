@@ -7,10 +7,11 @@ pub extern "C" fn wire_add(
     title: *mut wire_uint_8_list,
     description: *mut wire_uint_8_list,
     priority: *mut wire_uint_8_list,
+    day: *mut wire_uint_8_list,
     time: *mut wire_uint_8_list,
     status: *mut wire_uint_8_list,
 ) {
-    wire_add_impl(port_, title, description, priority, time, status)
+    wire_add_impl(port_, title, description, priority, day, time, status)
 }
 
 #[no_mangle]
