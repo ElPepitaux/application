@@ -1,1 +1,0 @@
-/home/sleo/repo/application/build/linux/x64/debug/./cargo/build/x86_64-unknown-linux-gnu/debug/libnative.so: /home/sleo/repo/application/native/src/api.rs /home/sleo/repo/application/native/src/bridge_generated.io.rs /home/sleo/repo/application/native/src/bridge_generated.rs /home/sleo/repo/application/native/src/lib.rs
